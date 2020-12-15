@@ -8,11 +8,11 @@ def loss_function(y, X, w, lamda=1):
     return loss
 
 
-def coordinate_descent(y, X, w, lamda=1, max_iter=10):
+def coordinate_descent(y, X, w, lamda=1):
     n, p = X.shape
     loss = loss_function(y, X, w)
     # 使用坐标下降法优化回归系数alpha
-    for it in range(max_iter):
+    for it in range(10):
         for k in range(p):
             b_k = sum([(X[i, k] ** 2) for i in range(n)])
             a_k = 0
@@ -26,7 +26,7 @@ def coordinate_descent(y, X, w, lamda=1, max_iter=10):
                 w_k = 0
             w[k] = w_k
         loss_prime = loss_function(y, X, w)
-        print(loss_prime)
+        print("loss:", loss_prime)
         delta = abs(loss_prime - loss)
         loss = loss_prime
         if delta < 0.1:
@@ -55,7 +55,7 @@ def sparse_learning(X, D, A, lamda=1, max_iter=10):
         print("第{}次迭代".format(iter))
         for i in range(n):
             print("优化A的第{}列".format(i))
-            coordinate_descent(X[:, i:i+1], D, A[:, i:i+1], lamda=lamda, max_iter=max_iter)
+            coordinate_descent(X[:, i], D, A[:, i], lamda=lamda)
         update_D(X, D, A, lamda=lamda)
 
 
@@ -69,7 +69,7 @@ def init():
 
 
 X, D, A = init()
-sparse_learning(X, D, A, max_iter=15)
-np.savetxt('D.txt', D)
-np.savetxt('A.txt', A)
+sparse_learning(X, D, A, max_iter=2)
+np.save('../实验结果/D_final.npy', D)
+np.save('../实验结果/A_final.npy', A)
 print(A, "\n", D)
